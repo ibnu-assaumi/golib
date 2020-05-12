@@ -30,8 +30,8 @@ func Middleware(h http.Handler) http.Handler {
 		}
 
 		body, _ := ioutil.ReadAll(req.Body)
-		bodyString := golib.MaskPassword(string(body))
-		bodyString = string(golib.MaskJSONPassword(body))
+		bodyString := string(golib.MaskJSONPassword(body))
+		bodyString = golib.MaskPassword(bodyString)
 
 		isRemoveBody, ok := req.Context().Value("remove-tag-body").(bool)
 		if ok {
