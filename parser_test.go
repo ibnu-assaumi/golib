@@ -36,6 +36,14 @@ func TestParseToFormValue(t *testing.T) {
 			wantForm: "Gender=L&id=10&name=agungdp&number=28",
 			wantErr:  true,
 		},
+		{
+			name: "Testcase #3: Negative",
+			args: args{
+				source: make(chan int),
+			},
+			wantForm: "none",
+			wantErr:  true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

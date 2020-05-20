@@ -67,6 +67,8 @@ var (
 	LogTag string
 	// Env default environment
 	Env string
+
+	storageDir = os.Getenv("STORAGE_DIR")
 )
 
 // InitLogger function init logger
@@ -214,7 +216,7 @@ func (flo *FileResultLogger) GetFileName(c string) string {
 // Get  function to get log
 // p string file name
 func (flo *FileResultLogger) Get(p string) string {
-	base := os.Getenv("STORAGE_DIR")
+	base := storageDir
 	f := base + "/archive/" + p
 	data, err := ioutil.ReadFile(f)
 	if err != nil {
@@ -251,7 +253,7 @@ func (flo *FileResultLogger) RequestResponse(c string, dt string) string {
 	t := time.Now()
 
 	// set the value of data
-	dir := os.Getenv("STORAGE_DIR") + "/logs/"
+	dir := storageDir + "/logs/"
 	filename := fmt.Sprintf("%s%s.%s", dir, t.Format("20060102"), c)
 	val := fmt.Sprintf("%s : %s", t.Format("15:04:05"), dt)
 
@@ -273,7 +275,7 @@ func (flo *FileResultLogger) RequestResponse(c string, dt string) string {
 func GetResultLogger() ResultLogger {
 	base := os.Getenv("LOG_DIR")
 	if base == "" {
-		base = os.Getenv("STORAGE_DIR") + "/logs/"
+		base = storageDir + "/logs/"
 	}
 	return newFileResultLogger(base)
 }

@@ -72,8 +72,8 @@ type collection struct {
 }
 
 type commonJSONAuth struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email string `json:"email"`
+	Pass  string `json:"password"`
 }
 
 // ValidateEmail function for validating email
@@ -152,9 +152,9 @@ func ValidateNumeric(str string) bool {
 func ValidateAlphabet(str string) bool {
 	var uppercase, lowercase, symbol int
 	for _, r := range str {
-		if r >= 65 && r <= 90 { //code ascii for [A-Z]
+		if IsUppercase(r) {
 			uppercase = +1
-		} else if r >= 97 && r <= 122 { //code ascii for [a-z]
+		} else if IsLowercase(r) {
 			lowercase = +1
 		} else { //except alphabet
 			symbol = +1
@@ -171,9 +171,9 @@ func ValidateAlphabet(str string) bool {
 func ValidateAlphabetWithSpace(str string) bool {
 	var uppercase, lowercase, space, symbol int
 	for _, r := range str {
-		if r >= 65 && r <= 90 { //code ascii for [A-Z]
+		if IsUppercase(r) { //code ascii for [A-Z]
 			uppercase = +1
-		} else if r >= 97 && r <= 122 { //code ascii for [a-z]
+		} else if IsLowercase(r) { //code ascii for [a-z]
 			lowercase = +1
 		} else if r == 32 { //code ascii for space
 			space = +1
@@ -192,11 +192,11 @@ func ValidateAlphabetWithSpace(str string) bool {
 func ValidateAlphanumeric(str string, must bool) bool {
 	var uppercase, lowercase, num, symbol int
 	for _, r := range str {
-		if r >= 65 && r <= 90 { //code ascii for [A-Z]
+		if IsUppercase(r) {
 			uppercase = +1
-		} else if r >= 97 && r <= 122 { //code ascii for [a-z]
+		} else if IsLowercase(r) {
 			lowercase = +1
-		} else if r >= 48 && r <= 57 { //code ascii for [0-9]
+		} else if IsNumeric(r) {
 			num = +1
 		} else {
 			symbol = +1
@@ -218,11 +218,11 @@ func ValidateAlphanumeric(str string, must bool) bool {
 func ValidateAlphanumericWithSpace(str string, must bool) bool {
 	var uppercase, lowercase, num, space, symbol int
 	for _, r := range str {
-		if r >= 65 && r <= 90 { //code ascii for [A-Z]
+		if IsUppercase(r) { //code ascii for [A-Z]
 			uppercase = +1
-		} else if r >= 97 && r <= 122 { //code ascii for [a-z]
+		} else if IsLowercase(r) { //code ascii for [a-z]
 			lowercase = +1
-		} else if r >= 48 && r <= 57 { //code ascii for [0-9]
+		} else if IsNumeric(r) { //code ascii for [0-9]
 			num = +1
 		} else if r == 32 { //code ascii for space
 			space = +1
@@ -448,18 +448,40 @@ func MaskPassword(s string) string {
 	return newText
 }
 
+// IsUppercase reusable rune check if char is uppercase
+func IsUppercase(r rune) bool {
+	return int(r) >= 65 && int(r) <= 90
+}
+
+// IsLowercase reusable rune check if char is lowercase
+func IsLowercase(r rune) bool {
+	return int(r) >= 97 && int(r) <= 122
+}
+
+// IsNumeric reusable rune check if char is numeric
+func IsNumeric(r rune) bool {
+	return int(r) >= 48 && int(r) <= 57
+}
+
+// IsAllowedSymbol check if rune is any of
+// [space, coma, ., !, ", #, $, %, &, ', (, ), *, +, -, /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, ~]
+func IsAllowedSymbol(r rune) bool {
+	m := int(r)
+	return m >= 32 && m <= 47 || m >= 58 && m <= 64 || m >= 91 && m <= 96 || m >= 123 && m <= 126
+}
+
 // ValidateLatinOnly func for check valid latin only
 func ValidateLatinOnly(str string) bool {
 	var uppercase, lowercase, num, allowed, symbol int
 	for _, r := range str {
-		if r >= 65 && r <= 90 { //code ascii for [A-Z]
+		if IsUppercase(r) {
 			uppercase = +1
-		} else if r >= 97 && r <= 122 { //code ascii for [a-z]
+		} else if IsLowercase(r) {
 			lowercase = +1
-		} else if r >= 48 && r <= 57 { //code ascii for [0-9]
+		} else if IsNumeric(r) {
 			num = +1
-		} else if r >= 32 && r <= 47 || r >= 58 && r <= 64 || r >= 91 && r <= 96 || r >= 123 && r <= 126 {
-			allowed = +1 //code ascii for [space, coma, ., !, ", #, $, %, &, ', (, ), *, +, -, /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, ~]
+		} else if IsAllowedSymbol(r) {
+			allowed = +1
 		} else {
 			symbol = +1
 		}
@@ -534,12 +556,11 @@ func (c *collection) loadDomainList() {
 // MaskJSONPassword mask password sent on JSON format
 func MaskJSONPassword(body []byte) []byte {
 	dest := commonJSONAuth{}
-	if err := json.Unmarshal(body, &dest); err == nil {
-		if dest.Email != "" && dest.Password != "" {
-			dest.Password = "xxxxx"
-			out, _ := json.Marshal(dest)
-			return out
-		}
+	if err := json.Unmarshal(body, &dest); err == nil && dest.Email != "" && dest.Pass != "" {
+		dest.Pass = "xxxxx"
+		out, _ := json.Marshal(dest)
+		return out
+
 	}
 	return body
 }

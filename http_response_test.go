@@ -18,6 +18,7 @@ func (w *writer) Header() http.Header {
 	return http.Header{}
 }
 
+// WriteHeader implement http package
 func (w *writer) WriteHeader(code int) {
 }
 
@@ -40,6 +41,7 @@ func TestNewHTTPResponseV2(t *testing.T) {
 		message string
 		params  []interface{}
 	}
+	var defaultMessage = "Fetch all data"
 	tests := []struct {
 		name string
 		args args
@@ -49,7 +51,7 @@ func TestNewHTTPResponseV2(t *testing.T) {
 			name: "Testcase #1: Response data list (include meta)",
 			args: args{
 				code:    http.StatusOK,
-				message: "Fetch all data",
+				message: defaultMessage,
 				params: []interface{}{
 					[]ExampleModel{{OrderID: "061499700032"}, {OrderID: "061499700033"}},
 					Meta{Page: 1, Limit: 10, TotalPages: 10, TotalRecords: 100},
@@ -58,7 +60,7 @@ func TestNewHTTPResponseV2(t *testing.T) {
 			want: &ResponseV2{
 				Success: true,
 				Code:    200,
-				Message: "Fetch all data",
+				Message: defaultMessage,
 				Meta:    Meta{Page: 1, Limit: 10, TotalPages: 10, TotalRecords: 100},
 				Data:    []ExampleModel{{OrderID: "061499700032"}, {OrderID: "061499700033"}},
 			},
@@ -69,14 +71,14 @@ func TestNewHTTPResponseV2(t *testing.T) {
 				code:    http.StatusOK,
 				message: "Get detail data",
 				params: []interface{}{
-					ExampleModel{OrderID: "061499700032"},
+					ExampleModel{OrderID: "061499700037"},
 				},
 			},
 			want: &ResponseV2{
 				Success: true,
 				Code:    200,
 				Message: "Get detail data",
-				Data:    ExampleModel{OrderID: "061499700032"},
+				Data:    ExampleModel{OrderID: "061499700037"},
 			},
 		},
 		{
@@ -95,9 +97,9 @@ func TestNewHTTPResponseV2(t *testing.T) {
 			name: "Testcase #4: Response data list (with include)",
 			args: args{
 				code:    http.StatusOK,
-				message: "Fetch all data",
+				message: defaultMessage,
 				params: []interface{}{
-					[]ExampleModel{{OrderID: "061499700032"}, {OrderID: "061499700033"}},
+					[]ExampleModel{{OrderID: "061499700031"}, {OrderID: "0614997000333"}},
 					exampleInclude,
 					Meta{Page: 1, Limit: 10, TotalPages: 10, TotalRecords: 100},
 				},
@@ -105,9 +107,9 @@ func TestNewHTTPResponseV2(t *testing.T) {
 			want: &ResponseV2{
 				Success: true,
 				Code:    200,
-				Message: "Fetch all data",
+				Message: defaultMessage,
 				Meta:    Meta{Page: 1, Limit: 10, TotalPages: 10, TotalRecords: 100},
-				Data:    []ExampleModel{{OrderID: "061499700032"}, {OrderID: "061499700033"}},
+				Data:    []ExampleModel{{OrderID: "061499700031"}, {OrderID: "0614997000333"}},
 				Include: exampleInclude,
 			},
 		},
@@ -136,13 +138,13 @@ func TestNewHTTPResponseV2(t *testing.T) {
 	}
 }
 
-func TestHTTPResponse_JSON(t *testing.T) {
+func TestHTTPResponseJSON(t *testing.T) {
 	resp := NewHTTPResponseV2(200, "success")
 	w := new(writer)
 	assert.NoError(t, resp.JSON(w))
 }
 
-func TestHTTPResponse_XML(t *testing.T) {
+func TestHTTPResponseXML(t *testing.T) {
 	resp := NewHTTPResponseV2(200, "success")
 	w := new(writer)
 	assert.NoError(t, resp.XML(w))
