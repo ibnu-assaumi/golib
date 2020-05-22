@@ -21,14 +21,14 @@ func TestMultiError(t *testing.T) {
 
 func TestAppendMultiError(t *testing.T) {
 	multiError1 := NewMultiError()
-	multiError1.Append("err1", fmt.Errorf("error 1"))
+	multiError1.Append("err1", fmt.Errorf("error 11"))
 
 	multiError2 := NewMultiError()
-	multiError2.Append("err2", fmt.Errorf("error 2"))
+	multiError2.Append("err2", fmt.Errorf("error 21"))
 
 	multiErrorAll := NewMultiError()
-	multiErrorAll.Append("err1", fmt.Errorf("error 1"))
-	multiErrorAll.Append("err2", fmt.Errorf("error 2"))
+	multiErrorAll.Append("err1", fmt.Errorf("error 11"))
+	multiErrorAll.Append("err2", fmt.Errorf("error 21"))
 
 	type args struct {
 		map1 *MultiError
@@ -88,7 +88,7 @@ func TestMultiErrorNotNill(t *testing.T) {
 	}
 }
 
-func TestMultiError_Clear(t *testing.T) {
+func TestMultiErrorClear(t *testing.T) {
 	t.Run("CLEAR MULTI ERROR", func(t *testing.T) {
 		m := NewMultiError()
 		m.Clear()

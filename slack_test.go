@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_getCaller(t *testing.T) {
+func TestGetCaller(t *testing.T) {
 	t.Run("TEST getCaller", func(t *testing.T) {
 		b := strings.Contains(getCaller(), "runtime")
 		assert.Equal(t, true, b)
@@ -17,7 +17,7 @@ func Test_getCaller(t *testing.T) {
 }
 
 func TestSendNotification(t *testing.T) {
-	t.Run("TEST SendNotification", func(t *testing.T) {
+	t.Run("TEST SendNotification", func(*testing.T) {
 		os.Setenv("SLACK_NOTIFIER", "true")
 		title := "test"
 		body := "test"

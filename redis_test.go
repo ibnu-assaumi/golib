@@ -26,7 +26,7 @@ func TestCloseRedis(t *testing.T) {
 	redisClient = make(map[string]*redis.Client)
 	redisClient["test"] = client
 
-	t.Run("OK CloseRedis", func(t *testing.T) {
+	t.Run("OK CloseRedis", func(*testing.T) {
 		CloseRedis()
 	})
 }

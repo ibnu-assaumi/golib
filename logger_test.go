@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLevel_String(t *testing.T) {
+func TestLevelString(t *testing.T) {
 
 	t.Parallel()
 
@@ -79,43 +79,69 @@ func TestLogContext(t *testing.T) {
 	})
 }
 
+var (
+	testConst = "any message"
+	testTags  = map[string]interface{}{"test": testConst}
+)
+var testCasesLog = []struct {
+	name    string
+	level   Level
+	message string
+	context string
+	scope   string
+	tags    map[string]interface{}
+}{
+	{
+		name:    "#1 Debug",
+		level:   DebugLevel,
+		message: testConst,
+		context: testConst,
+		scope:   testConst,
+		tags:    testTags,
+	},
+	{
+		name:    "#2 Info",
+		level:   InfoLevel,
+		message: testConst,
+		context: testConst,
+		scope:   testConst,
+		tags:    testTags,
+	},
+	{
+		name:    "#3 Warn",
+		level:   WarnLevel,
+		message: testConst,
+		context: testConst,
+		scope:   testConst,
+		tags:    testTags,
+	},
+	{
+		name:    "#4 Error",
+		level:   ErrorLevel,
+		message: testConst,
+		context: testConst,
+		scope:   testConst,
+		tags:    testTags,
+	},
+	{
+		name:    "#5 Panic",
+		level:   PanicLevel,
+		message: testConst,
+		context: testConst,
+		scope:   testConst,
+		tags:    testTags,
+	},
+}
+
 func TestLog(t *testing.T) {
 
 	t.Parallel()
 
-	var l Level
-
-	m := "test"
-	c := "test"
-	s := "test"
-	customTag := make(map[string]interface{})
-	customTag["test"] = "test"
-
-	t.Run("DebugLevel LOG", func(t *testing.T) {
-		l = DebugLevel
-		Log(l, m, c, s, customTag)
-	})
-
-	t.Run("InfoLevel LOG", func(t *testing.T) {
-		l = InfoLevel
-		Log(l, m, c, s, customTag)
-	})
-
-	t.Run("WarnLevel LOG", func(t *testing.T) {
-		l = WarnLevel
-		Log(l, m, c, s, customTag)
-	})
-
-	t.Run("ErrorLevel LOG", func(t *testing.T) {
-		l = ErrorLevel
-		Log(l, m, c, s, customTag)
-	})
-
-	t.Run("PanicLevel LOG", func(t *testing.T) {
-		l = PanicLevel
-		Log(l, m, c, s, customTag)
-	})
-
+	for _, tc := range testCasesLog {
+		t.Run(tc.name, func(*testing.T) {
+			Log(tc.level, tc.message, tc.context, tc.scope, tc.tags)
+		})
+	}
 }
 
 func TestLogError(t *testing.T) {
@@ -124,13 +150,13 @@ func TestLogError(t *testing.T) {
 
 	t.Parallel()
 
-	t.Run("LOG ERROR", func(t *testing.T) {
+	t.Run("LOG ERROR", func(*testing.T) {
 		msg := "test"
 		LogError(err, ctx, msg)
 	})
 }
 
-func Test_newFileResultLogger(t *testing.T) {
+func TestNewFileResultLogger(t *testing.T) {
 
 	t.Run("SUCCESS newFileResultLogger", func(t *testing.T) {
 		re := regexp.MustCompile(`^(.*golib)`)
@@ -149,7 +175,7 @@ func Test_newFileResultLogger(t *testing.T) {
 	})
 }
 
-func TestFileResultLogger_LastError(t *testing.T) {
+func TestFileResultLoggerLastError(t *testing.T) {
 	t.Run("NIL LastError", func(t *testing.T) {
 		f := &FileResultLogger{}
 		assert.Nil(t, f.LastError())
@@ -163,21 +189,21 @@ func TestFileResultLogger_LastError(t *testing.T) {
 	})
 }
 
-func TestFileResultLogger_GetFileName(t *testing.T) {
+func TestFileResultLoggerGetFileName(t *testing.T) {
 	t.Run("SUCCESS GetFileName", func(t *testing.T) {
 		f := &FileResultLogger{}
 		assert.NotEqual(t, "", f.GetFileName("test"))
 	})
 }
 
-func TestFileResultLogger_Get(t *testing.T) {
+func TestFileResultLoggerGet(t *testing.T) {
 	t.Run("ERROR Get", func(t *testing.T) {
 		f := &FileResultLogger{}
 		assert.Equal(t, "", f.Get(""))
 	})
 }
 
-func TestFileResultLogger_Store(t *testing.T) {
+func TestFileResultLoggerStore(t *testing.T) {
 	t.Run("SUCCESS Store", func(t *testing.T) {
 		re := regexp.MustCompile(`^(.*golib)`)
 		cwd, _ := os.Getwd()
@@ -195,7 +221,7 @@ func TestFileResultLogger_Store(t *testing.T) {
 	})
 }
 
-func TestFileResultLogger_RequestResponse(t *testing.T) {
+func TestFileResultLoggerRequestResponse(t *testing.T) {
 	t.Run("ERROR RequestResponse", func(t *testing.T) {
 		f := &FileResultLogger{}
 		s := f.RequestResponse("test", "test")
@@ -210,7 +236,7 @@ func TestGetResultLogger(t *testing.T) {
 }
 
 func TestStoreRequestResponse(t *testing.T) {
-	t.Run("", func(t *testing.T) {
+	t.Run("", func(*testing.T) {
 		s := StoreRequestResponse("200", []byte("test"), []byte("test"))
 		fmt.Println(s)
 	})

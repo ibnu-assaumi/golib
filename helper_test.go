@@ -347,7 +347,7 @@ func TestValidateLatinOnly(t *testing.T) {
 }
 
 func TestStringArrayReplace(t *testing.T) {
-	t.Run("Test Validate Latin Only", func(t *testing.T) {
+	t.Run("Test String Array Replace", func(t *testing.T) {
 		find := []string{"##YEAR##", "##FULLNAME##", "##URL##"}
 		replacer := []string{"2012", "member", "http://asd.co"}
 		content := StringArrayReplace("asdsad", find, replacer)
@@ -359,7 +359,7 @@ func TestStringArrayReplace(t *testing.T) {
 }
 
 func TestValidateMaxInput(t *testing.T) {
-	t.Run("Test Validate Latin Only", func(t *testing.T) {
+	t.Run("Test Validate Max Input", func(t *testing.T) {
 		shortInputString := "Game of Thrones"
 		tooLongInputString := `Let's say we require an item from our drop down list, but instead we get a value fabricated by hackers
 		Let's say we require an item from our drop down list, but instead we get a value fabricated by hackers
@@ -460,13 +460,13 @@ func TestValidateDomain(t *testing.T) {
 
 func TestMaskJSONPassword(t *testing.T) {
 	t.Run("Test masking json password", func(t *testing.T) {
-		password := `{"email": "pian.mutakin@bhinneka.com","password": "somepassword"}`
-		mm := MaskJSONPassword([]byte(password))
+		pass := `{"email": "pian.mutakin@bhinneka.com","password": "somepassword"}`
+		mm := MaskJSONPassword([]byte(pass))
 		assert.NotContains(t, string(mm), "somepassword")
 		assert.Contains(t, string(mm), "xxxxx")
 
-		password = `{"somefield": "somevalue", "someotherfield": "somepassword"}`
-		mp := MaskJSONPassword([]byte(password))
+		pass = `{"somefield": "somevalue", "someotherfield": "somepassword"}`
+		mp := MaskJSONPassword([]byte(pass))
 		assert.Contains(t, string(mp), "somepassword")
 	})
 }
