@@ -7,6 +7,7 @@ require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/google/jsonapi v0.0.0-20200226002910-c8283f632fb7
+	github.com/hootsuite/healthchecks v2.1.1+incompatible
 	github.com/jinzhu/gorm v1.9.12
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
